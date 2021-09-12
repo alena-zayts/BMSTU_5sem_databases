@@ -13,7 +13,7 @@
 
 (Sunshine-ki )(8 лаб) https://github.com/Sunshine-ki/BMSTU5_DB
 
-(Winterpuma (оберган))(7 лаб, доп2, доп3) https://github.com/Winterpuma/bmstu_DB/tree/master
+(PYTHON Winterpuma (оберган))(7 лаб, доп2, доп3) https://github.com/Winterpuma/bmstu_DB/tree/master
 
 (medva1997 (давнииий))(10 лаб) https://github.com/medva1997/bmstu_sem5/tree/master/DB
 
