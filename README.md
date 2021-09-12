@@ -23,7 +23,7 @@
 
 (PYTHON TinyMarcus)(5 лаб+extra) https://github.com/TinyMarcus/databases
 
-(Pandoral (старое))(9 лаб) https://github.com/Panda-Lewandowski/DataBase 
+(good Pandoral (старое))(9 лаб) https://github.com/Panda-Lewandowski/DataBase 
 
 (4 лабы) https://github.com/Kulikov17/DataBase_BMSTU
 
