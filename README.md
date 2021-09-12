@@ -21,7 +21,7 @@
 
 (NastyRu)(6 лаб +extra) https://github.com/NastyRu/Database
 
-(TinyMarcus)(5 лаб+extra) https://github.com/TinyMarcus/databases
+(PYTHON TinyMarcus)(5 лаб+extra) https://github.com/TinyMarcus/databases
 
 (Pandoral (старое))(9 лаб) https://github.com/Panda-Lewandowski/DataBase 
 
