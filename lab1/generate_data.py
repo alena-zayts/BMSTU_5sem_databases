@@ -7,25 +7,98 @@ from random import choice
 faker = Faker(locale="ru_RU")
 faker = Faker()
 
+workers_columns = ['WorkerID', 'DepartmentID', 'FirstName', 'SecondName', 'Experience']
+departments_columns = ['DepartmentID', 'Name', 'Size', 'City', 'Income']
+office_supplies_columns = ['OfficeSupplyID', 'Name', 'PackSize', 'Price', 'Weight']
+requests_columns = ['RequestID', 'WorkerID', 'OfficeSupplyID', 'Amount', 'Completed']
+
 NDepartments = 1000
-NWorkers = 5000
-ExperienceLimits = [0, 80]
-IncomeLimit = 1e9
+NWorkers = 10000
+NOfficeSupplies = 1000
+NRequests = 1000
 
 DepartmentIDList = list(range(1, NDepartments + 1))
 WorkerIDList = list(range(1, NDepartments + 1))
+OfficeSuppliesIDList = list(range(1, NOfficeSupplies + 1))
+RequestsIDList = list(range(1, NRequests + 1))
 
-sex = ['m', 'f']
+ExperienceLimits = [0, 80]
+IncomeLimit = 1e9
+PackSizeLimits = [1, 1000]
+PriceLimit = 10000
+WeightLimit = 100
+AmountLimits = [1, 1000]
+completed = [True, False]
+
+
+
 
 workers_filename = 'workers.csv'
 departments_filename = 'departments.csv'
-products_filename = 'products.csv'
+office_supplies_filename = 'office_supplies.csv'
 requests_filename = 'requests.csv'
 
 sep = ','
 
-workers_columns = ['WorkerID', 'DepartmentID', 'FirstName', 'SecondName', 'Experience']
-departments_columns = ['DepartmentID', 'Name', 'Size', 'City', 'Income']
+
+
+OfficeSupplyNameInitialList = [
+    'Бумага для принтера',
+    'Файлы для документов',
+    'Папка регистратор (Сегрегатор)',
+    'Папки для хранения и перемещения документов (папки с зажимами, скоросшиватели)',
+    'Канцелярский степлер',
+    'Скобы для степлера',
+    'Дырокол',
+    'Ножницы',
+    'Канцелярский нож',
+    'Лотки для бумаг (вертикальные и горизонтальные)',
+    'Корзина для мусора',
+    'Подставка для ручек',
+    'Ручки для письма синие',
+    'Ручки цветные, для подчёркивания и выделения в тексте',
+    'Корректоры для текста',
+    'Подставка для блока бумаги',
+    'Настольный органайзер',
+    'Калькулятор',
+    'Линейка',
+    'Ластик для карандаша',
+    'Точилка для карандаша',
+    'Чернографитовый карандаш',
+    'Маркер для выделения текста',
+    'Маркеры для досок или флипчарта',
+    'Перманентные цветные маркеры',
+    'Блок бумаги для записей и стикеры для заметок',
+    'Закладки и разделители для папок в документы',
+    'Канцелярские кнопки',
+    'Канцелярские скрепки',
+    'Гвоздики для доски',
+    'Магниты для досок',
+    'Бумага для флипчарта',
+    'Клей ПВА и клей-карандаш',
+    'Расшиватель скоб (Антистеплер)',
+    'Канцелярская книга',
+    'Почтовые конверты',
+    'Биндеры (Зажимы для бумаги)',
+    'Блокноты или записные книги',
+    'Канцелярский и упаковочный скотч',
+    'Доска для заметок',
+    'Магнитная доска или флипчарт',
+    'Чистящие средства для досок',
+    'Настольные именные таблички',
+    'Папки с файлами',
+    'Папки для презентаций',
+    'Портфели для документов или папки с отделениями',
+    'Подкладка для письма',
+    'Штампы и печати',
+    'Штемпельная краска',
+    'Бейджи для сотрудников',
+]
+
+OfficeSupplyNameList = []
+for i in range(NOfficeSupplies // len(OfficeSupplyNameInitialList)):
+    for name in OfficeSupplyNameInitialList:
+        OfficeSupplyNameList.append(f'{name}, тип {i}')
 
 
 def generate_workers_and_departments():
@@ -56,5 +129,37 @@ def generate_workers_and_departments():
     DepartmentsDf.to_csv(departments_filename, sep=sep)
 
 
+def generate_office_supplies():
+    OfficeSuppliesDf = pd.DataFrame(columns=office_supplies_columns)
+    for OfficeSupplyID in OfficeSuppliesIDList:
+        Name = OfficeSupplyNameList[OfficeSupplyID - 1]
+        PackSize = randint(PackSizeLimits[0], PackSizeLimits[1])
+        Price = random() * PriceLimit
+        Weight = random() * WeightLimit
+
+        OfficeSupply = [OfficeSupplyID, Name, PackSize, Price, Weight]
+        OfficeSuppliesDf = OfficeSuppliesDf.append({office_supplies_columns[i]: OfficeSupply[i]
+                                      for i in range(len(office_supplies_columns))}, ignore_index=True)
+    OfficeSuppliesDf.to_excel(office_supplies_filename[:-3] + 'xls')
+    OfficeSuppliesDf.to_csv(office_supplies_filename, sep=sep)
+
+
+def generate_requests():
+    RequestsDf = pd.DataFrame(columns=requests_columns)
+    for RequestID in RequestsIDList:
+        WorkerID = choice(WorkerIDList)
+        OfficeSupplyID = choice(OfficeSuppliesIDList)
+        Amount = randint(AmountLimits[0], AmountLimits[1])
+        Completed = choice(completed)
+
+        Request = [RequestID, WorkerID, OfficeSupplyID, Amount, Completed]
+        RequestsDf = RequestsDf.append({requests_columns[i]: Request[i]
+                                      for i in range(len(requests_columns))}, ignore_index=True)
+    RequestsDf.to_excel(requests_filename[:-3] + 'xls')
+    RequestsDf.to_csv(requests_filename, sep=sep)
+
+
 if __name__ == "__main__":
     generate_workers_and_departments()
+    generate_office_supplies()
+    generate_requests()
