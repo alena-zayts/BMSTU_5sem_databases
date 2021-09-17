@@ -8,7 +8,7 @@ faker = Faker(locale="ru_RU")
 faker = Faker()
 
 workers_columns = ['WorkerID', 'DepartmentID', 'FirstName', 'SecondName', 'Experience']
-departments_columns = ['DepartmentID', 'Name', 'Size', 'City', 'Income']
+departments_columns = ['DepartmentID', 'DepartmentName', 'DepartmentSize', 'City', 'Income']
 office_supplies_columns = ['OfficeSupplyID', 'Name', 'PackSize', 'Price', 'Weight']
 requests_columns = ['RequestID', 'WorkerID', 'OfficeSupplyID', 'Amount', 'Completed']
 
@@ -23,14 +23,18 @@ OfficeSuppliesIDList = list(range(1, NOfficeSupplies + 1))
 RequestsIDList = list(range(1, NRequests + 1))
 
 ExperienceLimits = [0, 80]
-IncomeLimit = 1e9
+IncomeLimit = 1e9 - 1
 PackSizeLimits = [1, 1000]
 PriceLimit = 10000
-WeightLimit = 100
+WeightLimit = 100 - 1
 AmountLimits = [1, 1000]
-completed = [True, False]
+completed = [0, 1]
 
-
+FirstNameMaxLen = 15
+SecondNameMaxLen = 20
+DepartmentNameMaxLen = 30
+CityNameMaxLen = 20
+OfficeSupplyNameMaxLen = 40
 
 
 workers_filename = 'workers.csv'
@@ -39,7 +43,6 @@ office_supplies_filename = 'office_supplies.csv'
 requests_filename = 'requests.csv'
 
 sep = ','
-
 
 
 OfficeSupplyNameInitialList = [
@@ -108,8 +111,11 @@ def generate_workers_and_departments():
         DepartmentID = choice(DepartmentIDList)
         DepartmentSizeDict[DepartmentID] += 1
         FirstName, SecondName = faker.name().split()[:2]
+        if len(FirstName) > FirstNameMaxLen:
+            FirstName = FirstName[:FirstNameMaxLen]
+        if len(SecondName) > SecondNameMaxLen:
+            SecondName = FirstName[:SecondNameMaxLen]
         Experience = randint(ExperienceLimits[0], ExperienceLimits[1])
-
         Worker = [WorkerID, DepartmentID, FirstName, SecondName, Experience]
         WorkersDf = WorkersDf.append({workers_columns[i]: Worker[i]
                                       for i in range(len(workers_columns))}, ignore_index=True)
@@ -119,8 +125,12 @@ def generate_workers_and_departments():
     DepartmentsDf = pd.DataFrame(columns=departments_columns)
     for DepartmentID in DepartmentIDList:
         Name = faker.bs()
+        if len(Name) > DepartmentNameMaxLen:
+            Name = Name[:DepartmentNameMaxLen]
         Size = DepartmentSizeDict[DepartmentID]
         City = faker.city()
+        if len(City) > CityNameMaxLen:
+            City = City[:CityNameMaxLen]
         Income = random() * IncomeLimit
         Department = [DepartmentID, Name, Size, City, Income]
         DepartmentsDf = DepartmentsDf.append({departments_columns[i]: Department[i]
@@ -133,6 +143,8 @@ def generate_office_supplies():
     OfficeSuppliesDf = pd.DataFrame(columns=office_supplies_columns)
     for OfficeSupplyID in OfficeSuppliesIDList:
         Name = OfficeSupplyNameList[OfficeSupplyID - 1]
+        if len(Name) > OfficeSupplyNameMaxLen:
+            Name = Name[:OfficeSupplyNameMaxLen]
         PackSize = randint(PackSizeLimits[0], PackSizeLimits[1])
         Price = random() * PriceLimit
         Weight = random() * WeightLimit
