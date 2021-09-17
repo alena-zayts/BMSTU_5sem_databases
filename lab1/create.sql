@@ -35,8 +35,7 @@ create table if not exists Requests(
 
 
 
---copy Departments(DepartmentName, DepartmentSize, City, Income) from 'C:\Users\alena\Desktop\BMSTU_5sem_databases\lab1\departments.csv' delimiter ',' csv;
-
+--
 
 --select * from people where name = 'Winterpuma';
 

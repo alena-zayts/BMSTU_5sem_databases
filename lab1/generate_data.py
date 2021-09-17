@@ -175,3 +175,10 @@ if __name__ == "__main__":
     generate_workers_and_departments()
     generate_office_supplies()
     generate_requests()
+
+#chcp 1251
+# C:\Users\alena>cd C:\Program Files\PostgreSQL\12\bin
+# C:\Program Files\PostgreSQL\12\bin>psql -h "localhost" -p 5432 -U postgres PD
+# Пароль пользователя postgres:
+
+# Введите "help", чтобы получить справку.
