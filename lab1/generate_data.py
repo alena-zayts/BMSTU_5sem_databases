@@ -34,7 +34,6 @@ DepartmentNameMaxLen = 30
 CityNameMaxLen = 20
 OfficeSupplyNameMaxLen = 40
 
-
 workers_filename = 'workers.csv'
 departments_filename = 'departments.csv'
 office_supplies_filename = 'office_supplies.csv'
@@ -43,7 +42,6 @@ requests_filename = 'requests.csv'
 sep = ','
 
 IncomeRound = 2
-
 
 OfficeSupplyNameInitialList = [
     'Бумага для принтера',
@@ -98,12 +96,46 @@ OfficeSupplyNameInitialList = [
     'Бейджи для сотрудников',
 ]
 
-OfficeSupplyNameInitialList = ['timestamp', ]
+OfficeSupplyNameInitialList = [
+    'Stapler',
+    'Eraser',
+    'Push-pin',
+    'Drawing pin',
+    'Paper clip',
+    'Rubber stamp',
+    'Highlighter',
+    'Fountain pen',
+    'Pencil',
+    'Marker',
+    'Ballpoint',
+    'Bulldog clip',
+    'Tape dispenser',
+    'Pencil sharpener',
+    'Label',
+    'Calculator',
+    'Glue',
+    'Scissors',
+    'Sticky notes',
+    'Paper',
+    'Notebook',
+    'Envelope',
+    'Clipboard',
+    'Monitor',
+    'Computer',
+    'Keyboard',
+    'Folder',
+    'Fax',
+    'Filing cabinet',
+    'Telephone',
+    'Swivel chair',
+    'Desk',
+    'Wastebasket',
+]
 
 OfficeSupplyNameList = []
-for i in range(NOfficeSupplies // len(OfficeSupplyNameInitialList)):
+for i in range(NOfficeSupplies // len(OfficeSupplyNameInitialList) + 1):
     for name in OfficeSupplyNameInitialList:
-        OfficeSupplyNameList.append(f'{name}, тип {i}')
+        OfficeSupplyNameList.append(f'{name}, type {i}')
 
 
 def generate_workers_and_departments():
@@ -146,7 +178,8 @@ def generate_workers_and_departments():
 def generate_office_supplies():
     OfficeSuppliesDf = pd.DataFrame(columns=office_supplies_columns)
     for OfficeSupplyID in OfficeSuppliesIDList:
-        Name = OfficeSupplyNameList[OfficeSupplyID - 1]
+        #Name = OfficeSupplyNameList[OfficeSupplyID - 1]
+        Name = choice(OfficeSupplyNameInitialList)
         if len(Name) > OfficeSupplyNameMaxLen:
             Name = Name[:OfficeSupplyNameMaxLen]
             print(len(Name))
@@ -156,7 +189,7 @@ def generate_office_supplies():
 
         OfficeSupply = [OfficeSupplyID, Name, PackSize, Price, Weight]
         OfficeSuppliesDf = OfficeSuppliesDf.append({office_supplies_columns[i]: OfficeSupply[i]
-                                      for i in range(len(office_supplies_columns))}, ignore_index=True)
+                                                    for i in range(len(office_supplies_columns))}, ignore_index=True)
     OfficeSuppliesDf.to_excel(office_supplies_filename[:-3] + 'xls')
     OfficeSuppliesDf = OfficeSuppliesDf.drop(office_supplies_columns[0], axis=1)
     OfficeSuppliesDf.to_csv(office_supplies_filename, sep=sep, header=False, index=False)
@@ -172,7 +205,7 @@ def generate_requests():
 
         Request = [RequestID, WorkerID, OfficeSupplyID, Amount, Completed]
         RequestsDf = RequestsDf.append({requests_columns[i]: Request[i]
-                                      for i in range(len(requests_columns))}, ignore_index=True)
+                                        for i in range(len(requests_columns))}, ignore_index=True)
     RequestsDf.to_excel(requests_filename[:-3] + 'xls')
     RequestsDf = RequestsDf.drop(requests_columns[0], axis=1)
     RequestsDf.to_csv(requests_filename, sep=sep, header=False, index=False)
@@ -183,9 +216,8 @@ if __name__ == "__main__":
     generate_office_supplies()
     generate_requests()
 
-#chcp 1251
+# chcp 1251
 # net user postgres /active:yes
 # net user postgres 12345
 
 # Пароль пользователя postgres: 4541
-
