@@ -1,10 +1,18 @@
+s = '''
+\i C:/Users/alena/Desktop/BMSTU_5sem_databases/lab1/drop.sql
+\i C:/Users/alena/Desktop/BMSTU_5sem_databases/lab1/create.sql
+\i C:/Users/alena/Desktop/BMSTU_5sem_databases/lab1/constraints.sql
+\i C:/Users/alena/Desktop/BMSTU_5sem_databases/lab1/fill.sql
+'''
+
+
 from faker import Faker
 from random import randint, random, choice
 import pandas as pd
 from random import uniform
 from random import choice
 
-faker = Faker(locale="ru_RU")
+# faker = Faker(locale="ru_RU")
 faker = Faker()
 
 workers_columns = ['WorkerID', 'DepartmentID', 'FirstName', 'SecondName', 'Experience']
@@ -25,7 +33,7 @@ RequestsIDList = list(range(1, NRequests + 1))
 ExperienceLimits = [0, 80]
 IncomeLimit = 1e9 - 1
 PackSizeLimits = [1, 1000]
-PriceLimit = 10000
+PriceLimit = 100000 - 1
 WeightLimit = 100 - 1
 AmountLimits = [1, 1000]
 completed = [0, 1]
@@ -43,6 +51,8 @@ office_supplies_filename = 'office_supplies.csv'
 requests_filename = 'requests.csv'
 
 sep = ','
+
+IncomeRound = 2
 
 
 OfficeSupplyNameInitialList = [
@@ -98,6 +108,8 @@ OfficeSupplyNameInitialList = [
     'Бейджи для сотрудников',
 ]
 
+OfficeSupplyNameInitialList = ['timestamp', ]
+
 OfficeSupplyNameList = []
 for i in range(NOfficeSupplies // len(OfficeSupplyNameInitialList)):
     for name in OfficeSupplyNameInitialList:
@@ -120,7 +132,8 @@ def generate_workers_and_departments():
         WorkersDf = WorkersDf.append({workers_columns[i]: Worker[i]
                                       for i in range(len(workers_columns))}, ignore_index=True)
     WorkersDf.to_excel(workers_filename[:-3] + 'xls')
-    WorkersDf.to_csv(workers_filename, sep=sep)
+    WorkersDf = WorkersDf.drop(workers_columns[0], axis=1)
+    WorkersDf.to_csv(workers_filename, sep=sep, header=False, index=False)
 
     DepartmentsDf = pd.DataFrame(columns=departments_columns)
     for DepartmentID in DepartmentIDList:
@@ -132,11 +145,12 @@ def generate_workers_and_departments():
         if len(City) > CityNameMaxLen:
             City = City[:CityNameMaxLen]
         Income = random() * IncomeLimit
-        Department = [DepartmentID, Name, Size, City, Income]
+        Department = [DepartmentID, Name, Size, City, round(Income, IncomeRound)]
         DepartmentsDf = DepartmentsDf.append({departments_columns[i]: Department[i]
                                               for i in range(len(departments_columns))}, ignore_index=True)
     DepartmentsDf.to_excel(departments_filename[:-3] + 'xls')
-    DepartmentsDf.to_csv(departments_filename, sep=sep)
+    DepartmentsDf = DepartmentsDf.drop(departments_columns[0], axis=1)
+    DepartmentsDf.to_csv(departments_filename, sep=sep, header=False, index=False)
 
 
 def generate_office_supplies():
@@ -145,15 +159,17 @@ def generate_office_supplies():
         Name = OfficeSupplyNameList[OfficeSupplyID - 1]
         if len(Name) > OfficeSupplyNameMaxLen:
             Name = Name[:OfficeSupplyNameMaxLen]
+            print(len(Name))
         PackSize = randint(PackSizeLimits[0], PackSizeLimits[1])
         Price = random() * PriceLimit
-        Weight = random() * WeightLimit
+        Weight = random() * WeightLimit + 0.01
 
         OfficeSupply = [OfficeSupplyID, Name, PackSize, Price, Weight]
         OfficeSuppliesDf = OfficeSuppliesDf.append({office_supplies_columns[i]: OfficeSupply[i]
                                       for i in range(len(office_supplies_columns))}, ignore_index=True)
     OfficeSuppliesDf.to_excel(office_supplies_filename[:-3] + 'xls')
-    OfficeSuppliesDf.to_csv(office_supplies_filename, sep=sep)
+    OfficeSuppliesDf = OfficeSuppliesDf.drop(office_supplies_columns[0], axis=1)
+    OfficeSuppliesDf.to_csv(office_supplies_filename, sep=sep, header=False, index=False)
 
 
 def generate_requests():
@@ -168,7 +184,8 @@ def generate_requests():
         RequestsDf = RequestsDf.append({requests_columns[i]: Request[i]
                                       for i in range(len(requests_columns))}, ignore_index=True)
     RequestsDf.to_excel(requests_filename[:-3] + 'xls')
-    RequestsDf.to_csv(requests_filename, sep=sep)
+    RequestsDf = RequestsDf.drop(requests_columns[0], axis=1)
+    RequestsDf.to_csv(requests_filename, sep=sep, header=False, index=False)
 
 
 if __name__ == "__main__":
@@ -177,8 +194,8 @@ if __name__ == "__main__":
     generate_requests()
 
 #chcp 1251
-# C:\Users\alena>cd C:\Program Files\PostgreSQL\12\bin
-# C:\Program Files\PostgreSQL\12\bin>psql -h "localhost" -p 5432 -U postgres PD
-# Пароль пользователя postgres:
+# net user postgres /active:yes
+# net user postgres 12345
 
-# Введите "help", чтобы получить справку.
+# Пароль пользователя postgres: 4541
+
