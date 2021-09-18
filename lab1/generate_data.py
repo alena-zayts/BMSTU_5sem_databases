@@ -1,16 +1,6 @@
-s = '''
-\i C:/Users/alena/Desktop/BMSTU_5sem_databases/lab1/drop.sql
-\i C:/Users/alena/Desktop/BMSTU_5sem_databases/lab1/create.sql
-\i C:/Users/alena/Desktop/BMSTU_5sem_databases/lab1/constraints.sql
-\i C:/Users/alena/Desktop/BMSTU_5sem_databases/lab1/fill.sql
-'''
-
-
 from faker import Faker
 from random import randint, random, choice
 import pandas as pd
-from random import uniform
-from random import choice
 
 # faker = Faker(locale="ru_RU")
 faker = Faker()

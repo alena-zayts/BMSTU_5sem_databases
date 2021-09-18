@@ -30,17 +30,3 @@ create table if not exists Requests(
 	Amount integer not null,
 	Completed boolean not null
 );
-
-
-
-
-
---
-
---select * from people where name = 'Winterpuma';
-
---select * from people;
---select * from food_category;
---select * from food;
---select * from diet;
---select name, kcal from food
