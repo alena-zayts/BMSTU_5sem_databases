@@ -1,6 +1,6 @@
 alter table departments
 add constraint pk_department_id primary key (department_id),
-add constraint check_department_size check (department_Size between 0 and 10000),
+add constraint check_department_size check (department_Size between 0 and 100000),
 add constraint check_income check (income between 0.00 and 999999999.99);
 
 alter table workers
@@ -19,7 +19,8 @@ alter table requests
 add constraint pk_request_id primary key (request_id),
 add constraint fk_worker_id foreign key (worker_id) references workers (worker_id),
 add constraint fk_office_supply_id foreign key (office_supply_id) references office_supplies (office_supply_id),
-add constraint check_amount check (amount between 1 and 1000);
+add constraint check_amount check (amount between 1 and 1000),
+add constraint movers_amount check (movers_amount between 1 and 10)
 
 
 

@@ -28,5 +28,6 @@ create table if not exists Requests(
 	Worker_ID integer not null,
 	Office_Supply_ID integer not null,
 	Amount integer not null,
-	Completed boolean not null
+	Completed boolean not null,
+	Movers_Amount integer not null
 );

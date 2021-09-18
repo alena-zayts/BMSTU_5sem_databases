@@ -8,7 +8,7 @@ faker = Faker()
 workers_columns = ['WorkerID', 'DepartmentID', 'FirstName', 'SecondName', 'Experience']
 departments_columns = ['DepartmentID', 'DepartmentName', 'DepartmentSize', 'City', 'Income']
 office_supplies_columns = ['OfficeSupplyID', 'Name', 'PackSize', 'Price', 'Weight']
-requests_columns = ['RequestID', 'WorkerID', 'OfficeSupplyID', 'Amount', 'Completed']
+requests_columns = ['RequestID', 'WorkerID', 'OfficeSupplyID', 'Amount', 'Completed', 'MoversAmount', ]
 
 NDepartments = 1000
 NWorkers = 10000
@@ -16,7 +16,7 @@ NOfficeSupplies = 1000
 NRequests = 1000
 
 DepartmentIDList = list(range(1, NDepartments + 1))
-WorkerIDList = list(range(1, NDepartments + 1))
+WorkerIDList = list(range(1, NWorkers + 1))
 OfficeSuppliesIDList = list(range(1, NOfficeSupplies + 1))
 RequestsIDList = list(range(1, NRequests + 1))
 
@@ -27,6 +27,10 @@ PriceLimit = 100000 - 1
 WeightLimit = 100 - 1
 AmountLimits = [1, 1000]
 completed = [0, 1]
+MoversAmountLimits = [1, 10]
+
+max_total_weight = WeightLimit * AmountLimits[1]
+weight_per_person = 10
 
 FirstNameMaxLen = 15
 SecondNameMaxLen = 20
@@ -202,8 +206,9 @@ def generate_requests():
         OfficeSupplyID = choice(OfficeSuppliesIDList)
         Amount = randint(AmountLimits[0], AmountLimits[1])
         Completed = choice(completed)
+        MoversAmount = randint(MoversAmountLimits[0], MoversAmountLimits[1])
 
-        Request = [RequestID, WorkerID, OfficeSupplyID, Amount, Completed]
+        Request = [RequestID, WorkerID, OfficeSupplyID, Amount, Completed, MoversAmount]
         RequestsDf = RequestsDf.append({requests_columns[i]: Request[i]
                                         for i in range(len(requests_columns))}, ignore_index=True)
     RequestsDf.to_excel(requests_filename[:-3] + 'xls')
@@ -212,8 +217,11 @@ def generate_requests():
 
 
 if __name__ == "__main__":
+    print('generating workers and departments')
     generate_workers_and_departments()
+    print('generating office supplies')
     generate_office_supplies()
+    print('generating requests')
     generate_requests()
 
 # chcp 1251
