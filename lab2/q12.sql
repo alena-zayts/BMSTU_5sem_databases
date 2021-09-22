@@ -1,6 +1,16 @@
--- 2. Инструкция SELECT, использующая предикат BETWEEN.  
--- название и численность отделов для: отделов, у которых доход между 1.000.000 и 100.000.000
-SELECT department_name, department_size
-FROM departments
-WHERE income BETWEEN 1000000 AND 100000000
-ORDER BY department_size ASC 
+-- 12. Инструкция SELECT, использующая вложенные коррелированные
+-- подзапросы в качестве производных таблиц в предложении FROM
+--  rich and experienced 
+
+SELECT second_name, experience, department_size, income
+FROM workers JOIN 
+    (
+    SELECT department_id, department_size, income
+    FROM departments 
+    WHERE department_size < 3
+    INTERSECT
+    SELECT department_id, department_size, income
+    FROM departments 
+    WHERE income > 100000000
+    ) AS rich_and_small_dep ON workers.department_id = rich_and_small_dep.department_id
+WHERE experience > 10

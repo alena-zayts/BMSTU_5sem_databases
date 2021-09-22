@@ -1,10 +1,11 @@
--- 9. Инструкция SELECT, использующая простое выражение CASE. 
--- сколько останется лишних
+-- 10. Инструкция SELECT, использующая поисковое выражение CASE.
 
-SELECT office_supply_name, amount, pack_size,
-	CASE (amount % pack_size)
-    WHEN 0 THEN 'perfect'
-    ELSE CAST((pack_size - (amount % pack_size)) AS varchar(10)) || ' left'
-	END AS lefts
-FROM requests JOIN office_supplies ON requests.office_supply_id = office_supplies.office_supply_id
-order by lefts desc 
+
+SELECT worker_id, experience,
+ CASE 
+ WHEN experience < 10 THEN 'junior' 
+ WHEN experience < 30 THEN 'middle' 
+ WHEN experience < 70 THEN 'senior' 
+ ELSE 'GOD' 
+ END AS status 
+FROM workers

@@ -1,14 +1,14 @@
---5. Инструкция SELECT, использующая предикат EXISTS с вложенным подзапросом. 
--- id невыполненных заказов товаров, у которых цена меньше 1000
-SELECT 
-    request_id, completed
-FROM 
-    requests
-WHERE 
-    EXISTS( SELECT 
-                1 
-            FROM 
-                office_supplies
-            WHERE 
-                requests.office_supply_id = office_supplies.office_supply_id and price < 1000)
-     and not completed 
+-- 15. Инструкция SELECT, консолидирующая данные с помощью предложения
+-- GROUP BY и предложения HAVING. 
+-- Получить список товаров, среднее количество заказываемых единиц которых больше 
+-- общего среднего количества заказываемых единиц
+
+SELECT office_supply_id, AVG(amount) AS average_amount
+FROM requests
+GROUP BY office_supply_id 
+HAVING AVG(amount) > ( SELECT AVG(amount) AS common_avg_amount 
+ FROM requests) 
+
+ ( SELECT AVG(amount) AS common_avg_amount 
+ FROM requests) 
+ 
