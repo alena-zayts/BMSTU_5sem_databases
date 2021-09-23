@@ -1,11 +1,8 @@
--- 8. Инструкция SELECT, использующая скалярные подзапросы в выражениях столбцов.
--- тест min/max
+-- 18. Простая инструкция UPDATE. 
+UPDATE requests 
+SET amount = 1 
+WHERE completed;
 
-SELECT MAX(experience) counted_max, MIN(experience) counted_min, 
- ( SELECT experience 
- FROM workers 
- WHERE experience >= ALL ( SELECT experience  FROM workers) LIMIT 1 ) AS my_max, 
- ( SELECT experience 
- FROM workers 
- WHERE experience <= ALL ( SELECT experience  FROM workers) LIMIT 1 ) AS my_min
-FROM workers
+SELECT *
+from requests
+where completed and amount != 1

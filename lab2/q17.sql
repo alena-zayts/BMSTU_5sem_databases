@@ -1,11 +1,15 @@
--- 7. Инструкция SELECT, использующая агрегатные функции в выражениях столбцов. 
--- Проверка вычисления среднего
+-- 17. Многострочная инструкция INSERT, выполняющая вставку в таблицу
+-- результирующего набора данных вложенного подзапроса.
+-- вставится много строк
 
-SELECT 
-AVG(total_amount) AS Automatic_AVG,
-SUM(total_amount) / COUNT(office_supply_id) AS Calculated_AVG 
-FROM ( 
-SELECT office_supply_id, SUM(amount) AS total_amount 
- FROM requests 
- GROUP BY office_supply_id 
-) as gba
+INSERT INTO requests (worker_id, office_supply_id, amount, completed, movers_amount) 
+SELECT ( SELECT MAX(worker_id) 
+ FROM workers 
+ WHERE experience = 0), 
+ office_supply_id, 1, false, 1
+FROM office_supplies
+WHERE office_supply_name like '%pen'
+
+
+SELECT *
+from requests

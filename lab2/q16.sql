@@ -1,9 +1,8 @@
--- 6. Инструкция SELECT, использующая предикат сравнения с квантором. 
--- самые опытные сотрудники из первых 40 отделов
+--16. Однострочная инструкция INSERT, выполняющая вставку в таблицу одной
+-- строки значений. 
 
-SELECT first_name, second_name, experience, department_id 
-FROM workers 
-WHERE experience >= ALL ( SELECT experience 
- FROM workers
- WHERE department_id <= 40) 
- and department_id <= 40
+INSERT INTO departments (department_name, department_size, city, income) 
+VALUES ('BEST', 0, 'DreamTown', 0) ;
+
+SELECT *
+from departments
