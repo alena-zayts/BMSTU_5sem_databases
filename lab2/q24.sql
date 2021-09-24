@@ -1,9 +1,4 @@
--- 6. Инструкция SELECT, использующая предикат сравнения с квантором. 
--- самые опытные сотрудники из первых 40 отделов
+-- 24. Оконные функции. Использование конструкций MIN/MAX/AVG OVER() 
 
-SELECT first_name, second_name, experience, department_id 
-FROM workers 
-WHERE experience >= ALL ( SELECT experience 
- FROM workers
- WHERE department_id <= 40) 
- and department_id <= 40
+select department_name, department_size, income, avg(income) over (partition by department_size) as avg_income
+from departments
