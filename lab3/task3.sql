@@ -94,3 +94,53 @@ WHERE first_name = 'Aaron';
 SELECT * 
 FROM workers_new
 order by first_name;
+
+
+
+
+
+
+
+
+
+-- 1. Защита
+-- названия функций с 5 и более параметрами
+--drop function boss_func;
+CREATE OR REPLACE FUNCTION boss_func(
+	department_num int,
+	arg2 int,
+	arg3 int,
+	arg4 int,
+	arg5 int
+)
+RETURNS INT AS '
+    SELECT  MAX(experience)
+    FROM workers
+	Where department_id=department_num;
+' 
+LANGUAGE sql;
+SELECT boss_func(10, 10, 10, 10, 10) AS max_experience;
+
+
+
+CREATE OR REPLACE PROCEDURE get_big_funcs()
+AS '
+DECLARE
+    info RECORD;
+BEGIN
+    FOR info IN
+        SELECT specific_name, count(*) as num_of_params
+        FROM information_schema.parameters
+		where parameter_mode=''IN''
+		group by specific_name
+		having count(*) > 4
+		ORDER BY specific_name
+		
+		
+    LOOP
+        RAISE INFO ''info = % '', info;
+    END LOOP;
+END;
+' LANGUAGE plpgsql;
+
+CALL get_big_funcs();
