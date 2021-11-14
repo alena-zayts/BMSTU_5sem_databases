@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox as mb
 
 
-def create_list_box(rows, title, count=15):
+def create_list_box(rows, title, count=15, row=None):
     root = Tk()
 
     root.title(title)
@@ -12,9 +12,12 @@ def create_list_box(rows, title, count=15):
 
     list_box = Listbox(root, width=size, height=22,
                        font="monospace 10", bg="#DEB887", highlightcolor='#DEB887',
-                       selectbackground='#59405c', fg="#59405c")
+                       selectbackground='#98ff98', fg="#98ff98")
 
     list_box.insert(END, "█" * size)
+
+    if row:
+        list_box.insert(END, row)
 
     for row in rows:
         string = (("█ {:^" + str(count) + "} ") * len(row)).format(*row) + '█'
@@ -51,95 +54,118 @@ def execute_task4(cur, table_name, con):
     table_name = table_name.get()
 
     try:
-        cur.execute(f"SELECT * FROM {table_name}")
+        cur.execute(f"SELECT *, pg_size_pretty(pg_relation_size(indexrelname::text)) \
+        FROM pg_stat_all_indexes \
+        WHERE relname = '{table_name}';")
     except:
         # Откатываемся.
         con.rollback()
-        mb.showerror(title="Ошибка", message="Такой таблицы нет!")
+        mb.showerror(title="Ошибка", message="Такой таблицы не существует!")
         return
 
-    rows = [(elem[0],) for elem in cur.description]
+    rows = cur.fetchall()
+    row = '           '.join(list(elem[0] for elem in cur.description))
+    # create_list_box(rows, "Задание 3")
+    # rows = [(elem[0],) for elem in cur.description]
 
-    create_list_box(rows, "Задание 4", 17)
+    create_list_box(rows, "Задание 4", 17, row=row)
 
-
-def execute_task6(cur, user_id):
-    user_id = user_id.get()
-    print(user_id)
+def execute_task5(cur, department_id):
     try:
-        user_id = int(user_id)
+        department_id = int(department_id.get())
     except:
-        mb.showerror(title="Ошибка", message="Введите число!")
+        mb.showerror(title="Ошибка", message="Введите целое число!")
         return
 
-    # get_user - Подставляемая табличная функция.
-    # Возвращает пользователя по id.
-    cur.execute("SELECT * FROM get_user(%s)", (user_id,))
+    cur.execute(f"SELECT get_max_experience_in_department({department_id}) AS max_experience;")
+    row = cur.fetchone()
 
-    rows = cur.fetchone()
-
-    create_list_box((rows,), "Задание 6", 17)
+    mb.showinfo(title="Результат",
+                message=f"Максимальный опыт в отделе {department_id}: {row[0]}")
 
 
-def execute_task7(cur, param, con):
+
+
+def execute_task6(cur, l_exp, h_exp):
+    l_exp = l_exp.get()
+    h_exp = h_exp.get()
     try:
-        device_id = int(param[0].get())
-        company = param[1].get()
-        year_of_issue = int(param[2].get())
-        color = param[3].get()
-        price = int(param[4].get())
+        l_exp = int(l_exp)
+        h_exp = int(h_exp)
     except:
-        mb.showerror(title="Ошибка", message="Некорректные параметры!")
+        mb.showerror(title="Ошибка", message="Введите целые числа")
         return
 
-    if year_of_issue < 2000 or year_of_issue > 2120 or price < 0 or price > 100000:
-        mb.showerror(title="Ошибка", message="Неподходящие значения!")
-        return
+    cur.execute(f"select * from get_experience_info({l_exp}, {h_exp})")
 
-    print(device_id, company, year_of_issue, color, price)
+    rows = cur.fetchall()
+    row = '       '.join(list(elem[0] for elem in cur.description))
 
-    # Выполняем запрос.
+    create_list_box(rows, "Задание 6", 17, row=row)
+
+
+def execute_task7(cur, proze_for):
     try:
-        cur.execute("CALL insert_device(%s, %s, %s, %s, %s);",
-                    (device_id, company, year_of_issue, color, price))
+        proze_for = int(proze_for.get())
     except:
-        mb.showerror(title="Ошибка", message="Некорректный запрос!")
-        # Откатываемся.
-        con.rollback()
+        mb.showerror(title="Ошибка", message="Введите целое число")
         return
 
-    # Фиксируем изменения.
-    # Т.е. посылаем команду в бд.
-    # Метод commit() помогает нам применить изменения,
-    # которые мы внесли в базу данных,
-    # и эти изменения не могут быть отменены,
-    # если commit() выполнится успешно.
-    con.commit()
+    cur.execute("drop table if exists workers_copy;")
+    cur.execute("drop table if exists departments_copy;")
+    cur.execute("SELECT worker_id, department_id, experience "
+                "INTO TEMP workers_copy "
+                "FROM workers "
+                "where department_id between 1 and 5;")
+    cur.execute("SELECT department_id, income "
+                "INTO TEMP departments_copy "
+                "FROM departments "
+                "where department_id between 1 and 5;")
 
-    mb.showinfo(title="Информация!", message="Девайс добавлен!")
+    # cur.execute(f"select * "
+    #             f"from workers_copy inner join departments_copy "
+    #             f"on workers_copy.department_id = departments_copy.department_id "
+    #             f"order by worker_id;")
+    #
+    # rows = cur.fetchall()
+    # row = '       '.join(list(elem[0] for elem in cur.description))
+    #
+    # create_list_box(rows, "Задание 7 (до)", 17, row=row)
+
+    cur.execute(f"CALL prize({proze_for});")
+
+    cur.execute(f"select * "
+                f"from workers_copy inner join departments_copy "
+                f"on workers_copy.department_id = departments_copy.department_id "
+                f"order by worker_id;")
+
+    rows = cur.fetchall()
+    row = '       '.join(list(elem[0] for elem in cur.description))
+
+    create_list_box(rows, "Задание 7 (после)", 17, row=row)
+
+
 
 
 def execute_task10(cur, param, con):
     try:
-        user_id = int(param[0].get())
-        world_id = int(param[1].get())
+        request_id = int(param[0].get())
+        money = int(param[1].get())
         reason = param[2].get()
     except:
         mb.showerror(title="Ошибка", message="Некорректные параметры!")
         return
 
-    print(user_id, world_id, reason)
-
     cur.execute(
-        "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='blacklist'")
+        "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='banned_requests'")
 
     if not cur.fetchone():
         mb.showerror(title="Ошибка", message="Таблица не создана!")
         return
 
     try:
-        cur.execute("INSERT INTO blacklist VALUES(%s, %s, %s)",
-                    (user_id, world_id, reason))
+        cur.execute("INSERT INTO banned_requests (request_id, money_to_return, reason) VALUES(%s, %s, %s)",
+                    (request_id, money, reason))
     except:
         mb.showerror(title="Ошибка!", message="Ошибка запроса!")
         # Откатываемся.
@@ -149,4 +175,4 @@ def execute_task10(cur, param, con):
     # Фиксируем изменения.
     con.commit()
 
-    mb.showinfo(title="Информация!", message="Нарушитель добавлен!")
+    mb.showinfo(title="Информация!", message="Получилось")

@@ -29,20 +29,20 @@ def task2(cur, con = None):
 
     rows = cur.fetchall()
 
-    create_list_box(rows, "Задание 2")
+    create_list_box(rows, "Задание 2", row='request_id      office_supply_name     worker_first_name')
 
 
 def task3(cur, con = None):
-    # Добавить столбец с суммой кол-ва часов по группам возраста.
     cur.execute("\
-    WITH new_table (id, nickname, department_id, sum) \
+    with otv (first_name, department_id, department_size, income) \
     AS \
     ( \
-        SELECT id, nickname,  department_id, number_of_hours, SUM(number_of_hours) OVER(PARTITION BY department_id) sum \
-        FROM users \
-        ORDER BY id \
+        select workers.first_name, departments.department_id, departments.department_size, departments.income \
+        from workers join departments on workers.department_id=departments.department_id \
     ) \
-    SELECT * FROM new_table;")
+    SELECT first_name, department_id, department_size, income, avg(income) over(partition by department_size) avg_income_by_size \
+    from otv \
+    order by department_size;")
     rows = cur.fetchall()
     create_list_box(rows, "Задание 3")
 
@@ -69,84 +69,83 @@ def task4(cur, con):
 
 
 def task5(cur, con = None):
-    cur.execute("SELECT get_max_number_of_hours() AS max_hours;")
+    root_1 = Tk()
 
-    row = cur.fetchone()
+    root_1.title('Задание 5')
+    root_1.geometry("300x200")
+    root_1.configure(bg="#DEB887")
+    root_1.resizable(width=False, height=False)
 
-    mb.showinfo(title="Результат",
-                message=f"Максимальное кол-во часов составляет: {row[0]}")
+    Label(root_1, text="  Введите department_id:", bg="#DEB887").place(
+        x=75, y=50)
+    department_id = Entry(root_1)
+    department_id.place(x=75, y=85, width=150)
 
+    b = Button(root_1, text="Выполнить",
+               command=lambda arg1=cur, arg2=department_id: execute_task5(arg1, arg2),  bg="#F5F5DC")
+    b.place(x=75, y=120, width=150)
+
+    root_1.mainloop()
 
 def task6(cur, con = None):
     root = Tk()
 
-    root.title('Задание 1')
+    root.title('Задание 6')
     root.geometry("300x200")
     root.configure(bg="#DEB887")
     root.resizable(width=False, height=False)
 
-    Label(root, text="  Введите id:", bg="#DEB887").place(
+    Label(root, text="  Введите границы опыта:", bg="#DEB887").place(
         x=75, y=50)
-    user_id = Entry(root)
-    user_id.place(x=75, y=85, width=150)
+    l_exp = Entry(root)
+    l_exp.place(x=75, y=75, width=150)
+    h_exp = Entry(root)
+    h_exp.place(x=75, y=95, width=150)
 
     b = Button(root, text="Выполнить",
-               command=lambda arg1=cur, arg2=user_id: execute_task6(arg1, arg2),  bg="#F5F5DC")
+               command=lambda arg1=cur, arg2=l_exp, arg3=h_exp: execute_task6(arg1, arg2, arg3),  bg="#F5F5DC")
     b.place(x=75, y=120, width=150)
 
     root.mainloop()
 
 
 def task7(cur, con=None):
-    root = Tk()
+    root_1 = Tk()
 
-    root.title('Задание 7')
-    root.geometry("300x400")
-    root.configure(bg="#DEB887")
-    root.resizable(width=False, height=False)
+    root_1.title('Задание 7')
+    root_1.geometry("300x200")
+    root_1.configure(bg="#DEB887")
+    root_1.resizable(width=False, height=False)
 
-    names = ["идентификатор",
-             "компанию",
-             "год издания",
-             "цвет",
-             "цену"]
+    Label(root_1, text="  Введите требуемый заработок:", bg="#DEB887").place(
+        x=75, y=50)
+    prize_for = Entry(root_1)
+    prize_for.place(x=75, y=85, width=150)
 
-    param = list()
+    b = Button(root_1, text="Выполнить",
+               command=lambda arg1=cur, arg2=prize_for: execute_task7(arg1, arg2),  bg="#F5F5DC")
+    b.place(x=75, y=120, width=150)
 
-    i = 0
-    for elem in names:
-        Label(root, text=f"Введите {elem}:",
-              bg="#DEB887").place(x=70, y=i + 25)
-        elem = Entry(root)
-        i += 50
-        elem.place(x=70, y=i, width=150)
-        param.append(elem)
-
-    b = Button(root, text="Выполнить",
-               command=lambda: execute_task7(cur, param, con),  bg="#F5F5DC")
-    b.place(x=70, y=300, width=150)
-
-    root.mainloop()
+    root_1.mainloop()
 
 
 def task8(cur, con = None):
-    # Информация:
-    # https://postgrespro.ru/docs/postgrespro/10/functions-info
     cur.execute(
-        "SELECT current_database(), current_user;")
-    current_database, current_user = cur.fetchone()
+        "SELECT pg_postmaster_start_time();")
+    time = cur.fetchone()[0].strftime("%Y-%m-%d %H:%M:%S")
     mb.showinfo(title="Информация",
-                message=f"Имя текущей базы данных:\n{current_database}\nИмя пользователя:\n{current_user}")
+                message=f"Время запуска сервера:\n{time}")
 
 
 def task9(cur, con):
+    cur.execute("drop table if exists banned_requests;")
     cur.execute(" \
-        CREATE TABLE IF NOT EXISTS blacklist \
+        CREATE TABLE IF NOT EXISTS banned_requests \
         ( \
-            user_id INT, \
-            FOREIGN KEY(user_id) REFERENCES users(id), \
-            world_id INT, \
-            FOREIGN KEY(world_id) REFERENCES world(id), \
+            banned_requests_id serial not null PRIMARY KEY, \
+            request_id integer, \
+            FOREIGN KEY (request_id) REFERENCES requests(request_id), \
+            money_to_return INT, \
             reason VARCHAR \
         ) ")
 
@@ -164,8 +163,8 @@ def task10(cur, con):
     root.configure(bg="#DEB887")
     root.resizable(width=False, height=False)
 
-    names = ["идентификатор человека",
-             "идентификатор мира",
+    names = ["номер заявки",
+             "сумму на возврат",
              "причину"]
 
     param = list()
