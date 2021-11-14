@@ -190,4 +190,3 @@ END;
 
 CALL get_table_size('workers');
 CALL get_table_size('departments');
-

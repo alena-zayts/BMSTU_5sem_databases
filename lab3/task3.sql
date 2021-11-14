@@ -144,3 +144,4 @@ END;
 ' LANGUAGE plpgsql;
 
 CALL get_big_funcs();
+
