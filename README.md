@@ -3,7 +3,11 @@
 
 
 мета
+
+https://postgrespro.ru/docs/postgresql/9.6/information-schema
+
 https://postgrespro.ru/docs/postgresql/9.6/infoschema-columns
+
 
 
 8 лаб
