@@ -1,6 +1,14 @@
 # Базы данных
 
-1. 
+
+
+мета
+
+https://postgrespro.ru/docs/postgresql/9.6/information-schema
+
+Системные информационные функции
+https://postgrespro.ru/docs/postgrespro/10/functions-info
+
 
 
 8 лаб
