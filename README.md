@@ -1,6 +1,9 @@
 # Базы данных
 
-1. 
+
+
+мета
+https://postgrespro.ru/docs/postgresql/9.6/infoschema-columns
 
 
 8 лаб
