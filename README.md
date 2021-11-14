@@ -6,7 +6,8 @@
 
 https://postgrespro.ru/docs/postgresql/9.6/information-schema
 
-https://postgrespro.ru/docs/postgresql/9.6/infoschema-columns
+Системные информационные функции
+https://postgrespro.ru/docs/postgrespro/10/functions-info
 
 
 
