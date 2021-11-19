@@ -7,8 +7,10 @@
 https://postgrespro.ru/docs/postgresql/9.6/information-schema
 
 Системные информационные функции
+
 https://postgrespro.ru/docs/postgrespro/10/functions-info
 
+https://github.com/kpirap18/db
 
 
 8 лаб
