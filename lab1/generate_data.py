@@ -228,7 +228,7 @@ if __name__ == "__main__":
     generate_requests()
 
 # chcp 1251
-# net user postgres /active:yes
-# net user postgres 12345
+# net Worker postgres /active:yes
+# net Worker postgres 12345
 
 # Пароль пользователя postgres: 4541
