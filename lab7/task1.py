@@ -14,6 +14,7 @@ def request_1(workers):
         select(lambda x: {x['first_name'], x['department_id'], x['experience']})
     return result
 
+
 # Количество работников с опытом 80 лет
 def request_2(workers):
 
