@@ -72,7 +72,7 @@ def main():
             print(json.dumps(obj.get()), file=f)
 
         i += 1
-        time.sleep(10)
+        time.sleep(5)
     # faker = Faker()  # faker.name()
     # color = ["blue", "red", "purple", "yellow",
     #          "pink", "green", "black", "white", "coral", "gold", "silver"]
