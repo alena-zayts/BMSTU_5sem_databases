@@ -1,6 +1,6 @@
 # https://nifi.apache.org/docs/nifi-docs/html/getting-started.html
 # http://localhost:8080/nifi
-
+# https://localhost:8443/nifi/?processGroupId=root&componentIds=9bde25ae-017d-1000-dab2-b7aae629acf8
 
 from faker import Faker
 from random import randint, choice
@@ -8,28 +8,6 @@ import datetime
 import time
 import json
 
-
-class device():
-    # Структура полностью соответствует таблице device.
-    id = int()
-    company = str()
-    year_of_issue = int()
-    color = str()
-    price = int()
-
-    def __init__(self, id, company, year_of_issue, color, price):
-        self.id = id
-        self.company = company
-        self.year_of_issue = year_of_issue
-        self.color = color
-        self.price = price
-
-    def get(self):
-        return {'id': self.id, 'company': self.company, 'year_of_issue': self.year_of_issue,
-                'color': self.color, 'price': self.price}
-
-    def __str__(self):
-        return f"{self.id:<2} {self.company:<20} {self.year_of_issue:<5} {self.color:<5} {self.price:<15}"
 
 class Worker:
     worker_id = int()

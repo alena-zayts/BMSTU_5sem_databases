@@ -8,12 +8,10 @@ create table if not exists nifi_workers(
 	Experience integer not null
 );
 
-select * from nifi_workers;
 
-
+----------------------------------логирование добавления записей
 DROP TABLE if exists nifi_log;
 
---логирование записей
 CREATE TABLE nifi_log(
     id Serial PRIMARY KEY,
     worker_id INTEGER NOT NULL,
@@ -24,7 +22,6 @@ CREATE TABLE nifi_log(
 );
 
 
-
 CREATE or replace FUNCTION nifi_insert_trigger_proc() RETURNS trigger AS $emp_stamp$
     begin
 	    INSERT INTO nifi_log(worker_id, event_type, event_date, event_time)
@@ -33,8 +30,7 @@ CREATE or replace FUNCTION nifi_insert_trigger_proc() RETURNS trigger AS $emp_st
     END;
 $emp_stamp$ LANGUAGE plpgsql;
 
-
-
+drop trigger if exists nifi_insert_trigger on nifi_workers;
 
 CREATE TRIGGER nifi_insert_trigger
 AFTER INSERT
@@ -54,3 +50,36 @@ from nifi_log
 order by  event_date, event_time;
 
 
+-----------------------------------------логирование загруженных файлов
+DROP TABLE if exists nifi_file_log;
+
+create table if not exists nifi_file_log(
+	id Serial PRIMARY KEY,
+	filename varchar(40) not null,
+	load_time TIMESTAMP
+);
+
+
+CREATE or replace FUNCTION nifi_fl_insert_trigger_proc() RETURNS trigger AS $emp_stamp$
+    begin
+	UPDATE nifi_file_log
+    SET load_time = (SELECT current_timestamp)
+    WHERE id = NEW.id;
+   raise notice 'here';
+    RETURN NEW;
+    END;
+$emp_stamp$ LANGUAGE plpgsql;
+
+drop trigger if exists nifi_fl_insert_trigger on nifi_file_log;
+
+CREATE TRIGGER nifi_fl_insert_trigger
+AFTER insert
+    ON nifi_file_log
+    FOR EACH row
+    	EXECUTE PROCEDURE nifi_fl_insert_trigger_proc();
+
+INSERT INTO nifi_file_log(filename)
+VALUES('me');
+
+select *
+from nifi_file_log;
