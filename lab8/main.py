@@ -51,27 +51,7 @@ def main():
 
         i += 1
         time.sleep(5)
-    # faker = Faker()  # faker.name()
-    # color = ["blue", "red", "purple", "yellow",
-    #          "pink", "green", "black", "white", "coral", "gold", "silver"]
-    # i = 0
-    #
-    # while True:
-    #     obj = device(i, faker.name(), randint(2000, 2120), choice(color), randint(0, 100000))
-    #
-    #     # print(obj)
-    #     # print(json.dumps(obj.get()))
-    #
-    #     file_name = "data/device_" + str(i) + "_" + \
-    #                 str(datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")) + ".json"
-    #
-    #     print(file_name)
-    #
-    #     with open(file_name, "w") as f:
-    #         print(json.dumps(obj.get()), file=f)
-    #
-    #     i += 1
-    #     time.sleep(10)
+
 
 
 if __name__ == "__main__":
