@@ -25,88 +25,83 @@ alter table employees
 add constraint fk_employee_id foreign key (employee_id) references employees (employee_id);
 
 
---insert into employees (fio, birth_date, department)
---values
---	('qwe', date('25-01-2001'), 'rtyu'),
---	('asd', date('23-05-1939'), 'fghj'),
---	('tired', date('20-01-1969'), 'to print it'),
---	('but', date('20-07-1993'), 'need at least 10'),
---	('records', date('24-01-1299'), 'int this'),
---	('wonderful', date('20-01-1949'), 'table'),
---	('iu7', date('20-04-1959'), 'the best');
---
---insert into times (employee_id, r_date, weekday, r_time, r_TYPE)
---values
---	(1, date('14-12-2018'), 'Суббота', '08:20', 1),
---	(1, date('14-12-2018'), 'Суббота', '09:20', 2),
---	(1, date('14-12-2018'), 'Суббота', '09:00', 1),
---	(2, date('14-12-2018'), 'Суббота', '10:20', 1),
---	(3, date('14-12-2018'), 'Суббота', '09:30', 2),
---	(4, date('14-12-2018'), 'Суббота', '08:50', 1),
---	(5, date('15-12-2018'), 'Суббота', '10:20', 1);
 
 
 -- Работники.
-INSERT INTO employees
-VALUES (0, 'Сукочева', '2000-07-19', 'Программист');
+INSERT INTO employees (fio, birth_date, department)
+VALUES ('AAA', '2000-01-01', 'IT'),
+	   ('BBB', '1989-03-01', 'IT'),
 
-INSERT INTO employees
-VALUES (1, 'Малков', '1998-01-02', 'Программист');
+	   ('CCC', '1998-03-17', 'HR'),
 
-INSERT INTO employees
-VALUES (2, 'Софрнова', '2002-05-01', 'Системный администратор');
-
-INSERT INTO employees
-VALUES (3, 'Власов', '1995-11-11', 'Руководитель');
-
--- Пришли.
-INSERT INTO times
-VALUES (0, 0, CURRENT_DATE - 1, 'Понедельник', '08:55:00', 1);
-
-INSERT INTO times
-VALUES (1, 1, CURRENT_DATE - 1, 'Понедельник', '09:55:00', 1);		--o
-
-INSERT INTO times
-VALUES (2, 2, date('2021-12-15'), 'Суббота', '09:05:00', 1);		--o
-
-INSERT INTO times
-VALUES (3, 3, CURRENT_DATE - 1, 'Понедельник', '10:51:00', 1);		--o
-
--- Ушли.
-INSERT INTO times
-VALUES (4, 0, CURRENT_DATE - 1, 'Понедельник', '16:05:00', 2);
-
-INSERT INTO times
-VALUES (5, 1, CURRENT_DATE - 1, 'Понедельник', '16:06:00', 2);
-
-INSERT INTO times
-VALUES (6, 2, date('2021-12-15'), 'Суббота', '19:09:00', 2);
-
-INSERT INTO times
-VALUES (7, 3, CURRENT_DATE - 1, 'Понедельник', '21:00:00', 2);
-
-INSERT INTO times
-VALUES (8, 0, CURRENT_DATE - 1, 'Понедельник', '10:55:00', 2);
-INSERT INTO times
-VALUES (9, 0, CURRENT_DATE - 1, 'Понедельник', '10:59:00', 1);
-INSERT INTO times
-VALUES (10, 3, CURRENT_DATE - 1, 'Понедельник', '13:00:00', 2);
-INSERT INTO times
-VALUES (11, 3, CURRENT_DATE - 1, 'Понедельник', '11:00:00', 1);
+	   ('DDD', '1988-03-17', 'PR'),
+	   ('EEE', '2005-01-14', 'PR');
 
 
-INSERT INTO times
-VALUES (12, 2, date('2021-12-16'), 'e', '10:09:00', 1);  			----O
-INSERT INTO times
-VALUES (13, 1, date('2021-12-25'), 'Понедельник', '09:55:00', 1);	----O
-INSERT INTO times
-VALUES (14, 1, date('2021-11-16'), 'Понедельник', '09:55:00', 1);	----O
+
+
+
+INSERT INTO times (employee_id, r_date, weekday, r_time, r_TYPE)
+VALUES
+
+------------- отдел IT
+-- 1
+-- все в один день
+-- не опоздал, но выходил на 4 минуты, на работе всего 7 часов, рабочих - 6.54
+(1, '2021-12-14', 'Вторник', '08:50:00', 1),
+(1, '2021-12-14', 'Вторник', '10:55:00', 2),
+(1, '2021-12-14', 'Вторник', '10:59:00', 1),
+(1, '2021-12-14', 'Вторник', '15:50:00', 2),
+
+-- 2
+-- о 3 днях
+-- опоздал на 55 минут, выходил на 20 минут, на работе всего 11 часов, рабочих - 10.40
+(2, '2021-12-14', 'Вторник', '09:55:00', 1),
+(1, '2021-12-14', 'Вторник', '10:20:00', 2),
+(1, '2021-12-14', 'Вторник', '10:40:00', 1),
+(2, '2021-12-14', 'Вторник', '20:55:00', 2),
+-- опять опоздал в ту же неделю, не выходил, на работе 3 часа
+(2, '2021-12-15', 'Среда', '10:00:00', 1),
+(2, '2021-12-15', 'Среда', '13:00:00', 2),
+-- опять опоздал в другую неделю, не выходил, на работе 8 часов
+(2, '2021-12-01', 'Среда', '09:55:00', 1),
+(2, '2021-12-01', 'Среда', '17:55:00', 2),
+
+
+--------------- отдел HR
+-- 3
+-- 2 дня
+-- опоздал, не выходил, на работе 10.04
+(3, '2021-12-14', 'Вторник', '09:05:00', 1),
+(3, '2021-12-14', 'Вторник', '19:09:00', 2),
+-- опять опоздал в другую неделю, не выходил, на работе 8 часов
+(3, '2021-12-01', 'Среда', '09:55:00', 1),
+(3, '2021-12-01', 'Среда', '17:55:00', 2),
+
+
+-------------- отдел PR
+-- 4
+-- 1 день
+-- опоздал, выходил на 2 часа, на работе всего 10, рабочих 8
+(4, '2021-12-14', 'Вторник', '10:51:00', 1),
+(4, '2021-12-14', 'Вторник', '11:00:00', 2),
+(4, '2021-12-14', 'Вторник', '13:00:00', 1),
+(4, '2021-12-14', 'Вторник', '21:51:00', 2),
+
+-- 5
+-- 1 день
+-- опоздал, не выходил, на работе всего 3
+(5, '2021-12-14', 'Вторник', '9:01:00', 1),
+(5, '2021-12-14', 'Вторник', '12:01:00', 2);
+
+
+
+
+
 
 
 select * from employees;
 select * from times order by employee_id, r_time;
-
-
 
 
 
@@ -121,7 +116,7 @@ select * from times order by employee_id, r_time;
 with first_time_in as (
 select employee_id, min(r_time) as time_in
 from times
-where r_type = 1 and r_date = CURRENT_DATE - 1
+where r_type = 1 and r_date = '2021-12-14'
 group by employee_id )
 select count(*)
 from first_time_in
@@ -144,7 +139,7 @@ where r_type = 1 and r_date = $1
 group by employee_id )
 select count(*) as amount_of_laters
 from first_time_in
-where time_in > time '08:00:00';""", ['date'])
+where time_in > time '09:00:00';""", ['date'])
 
 res = plpy.execute(plan, [in_date])
 
@@ -153,7 +148,7 @@ if res:
 
 $$ LANGUAGE plpython3u;
 
-SELECT * FROM count_lates(CURRENT_DATE - 1) as "amount_of_laters";
+SELECT * FROM count_lates('2021-12-14') as "amount_of_laters";
 
 
 
@@ -170,10 +165,10 @@ where r_type = 1 and r_date = in_date
 group by employee_id )
 select count(*)
 from first_time_in
-where time_in > time '08:00:00';
+where time_in > time '09:00:00';
 $$ LANGUAGE SQL;
 
-SELECT count_lates_s(CURRENT_DATE - 1) AS cnt;
+SELECT count_lates_s('2021-12-14') AS cnt;
 
 
 
@@ -195,28 +190,19 @@ order by employee_id
 ) as lates on employees.employee_id = lates.employee_id;
 
 
+-- тут находим таких сотрудников
+--with first_time_in as (
+--	select distinct on (r_date, time_in) id, employee_id, EXTRACT(WEEK FROM r_date) as week_num, EXTRACT(year FROM r_date) as year, r_date, min(r_time) OVER (PARTITION BY employee_id, r_date) as time_in
+--	from times
+--	where r_type = 1)
+--select employee_id, year, week_num, count(*) as lates_per_week
+--from first_time_in
+--where time_in > time '09:00:00'
+--group by employee_id, year, week_num
+--having count(*) > 1
+--order by employee_id;
 
-with first_time_in as (
-	select distinct on (r_date, time_in) id, employee_id, EXTRACT(WEEK FROM r_date) as week_num, EXTRACT(year FROM r_date) as year, r_date, min(r_time) OVER (PARTITION BY employee_id, r_date) as time_in
-	from times
-	where r_type = 1)
-select employee_id, year, week_num, count(*) as lates_per_week
-from first_time_in
-where time_in > time '09:00:00'
-group by employee_id, year, week_num
-having count(*) > 1
-order by employee_id;
 
---select id, employee_id, r_date, r_time, r_type, EXTRACT(WEEK FROM r_date) as week_num, EXTRACT(year FROM r_date) as year
---from times;
---
---select *
---from times
---where r_type = 1 and time_in > time '09:00:00';
---
---select
---from employees
---group by employee_id
 
 
 -- 2.
@@ -250,5 +236,5 @@ with first_time_in as (
 	where r_type = 1)
 select department, count(distinct first_time_in.employee_id)
 from first_time_in join employees on first_time_in.employee_id = employees.employee_id
-where time_in > '10:00:00'
+where time_in > '9:00:00'
 group by department;
