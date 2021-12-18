@@ -238,3 +238,135 @@ select department, count(distinct first_time_in.employee_id)
 from first_time_in join employees on first_time_in.employee_id = employees.employee_id
 where time_in > '9:00:00'
 group by department;
+
+
+
+
+
+
+
+
+-------------------------------------------------- версия Алены (странно писать о себе в 3 лице...)
+-- 2. Написать скалярную функцию, возвращающую количество сотрудников
+-- в возрасте от 18 до 40, выходивших более 2х раз.
+
+
+-- сама функция, пояснения ниже (от мелких запросов к основному)
+drop function if exists task2();
+CREATE OR REPLACE FUNCTION task2()
+RETURNS real
+AS $$
+plan = plpy.prepare("""
+select count(*) as avg_age
+from employees
+where employee_id in (
+	with help_row_numbers as (
+		select id, employee_id, r_date, r_time, r_type, row_number() over (partition by employee_id, r_date, r_type order by r_time) as r1
+		from times
+		order by employee_id, r_date, r_time, r_type)
+	select employee_id
+	from help_row_numbers
+	where r_type = 2
+	group by employee_id
+	having max(r1) > 2 )
+and EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM birth_date) between 18 and 40;""")
+
+res = plpy.execute(plan)
+
+if res:
+	return res[0]['avg_age']
+
+$$ LANGUAGE plpython3u;
+
+SELECT * FROM task2() as "avg_age";
+
+
+
+--- так сможем посчитать количество выходов - это
+--  максиммальный row_number по r_type=2  для каждого сотрудника в течении дня
+select id, employee_id, r_date, r_time, r_type, row_number() over (partition by employee_id, r_date, r_type order by r_time) as r1
+from times
+order by employee_id, r_date, r_time, r_type;
+
+
+-- нам все-равно, в какой именно день он там курил постоянно, поэтому просто макс смотрим
+with help_row_numbers as (
+	select id, employee_id, r_date, r_time, r_type, row_number() over (partition by employee_id, r_date, r_type order by r_time) as r1
+	from times
+	order by employee_id, r_date, r_time, r_type)
+select employee_id, max(r1) as max_leaves
+from help_row_numbers
+where r_type = 2
+group by employee_id
+having max(r1) > 2;
+
+-- осталось взять id и по нему средний возраст
+select avg(EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM birth_date))
+from employees
+where employee_id in (
+	with help_row_numbers as (
+		select id, employee_id, r_date, r_time, r_type, row_number() over (partition by employee_id, r_date, r_type order by r_time) as r1
+		from times
+		order by employee_id, r_date, r_time, r_type)
+	select employee_id
+	from help_row_numbers
+	where r_type = 2
+	group by employee_id
+	having max(r1) > 2 )
+and EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM birth_date) between 18 and 40;
+
+
+-- 3. Написать скалярную функцию, возвращающую минимальный
+-- Возраст сотрудника, опоздавшего более чем на 10 минут.
+drop function if exists task3();
+CREATE OR REPLACE FUNCTION task3()
+RETURNS real
+AS $$
+plan = plpy.prepare("""
+select min(EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM birth_date)) as min_age
+from employees
+where employee_id in (
+	with help_row_numbers as (
+			select id, employee_id, r_date, r_time, r_type, row_number() over (partition by employee_id, r_date, r_type order by r_time) as r1
+			from times
+			order by employee_id, r_date, r_time, r_type)
+		select employee_id
+		from help_row_numbers
+		where r_type = 1 and r1 = 1
+		group by employee_id
+		having max(r_time) - '09:00:00' > '00:10:00');""")
+
+res = plpy.execute(plan)
+
+if res:
+	return res[0]['min_age']
+
+$$ LANGUAGE plpython3u;
+
+SELECT * FROM task3() as "min_age";
+
+-- ну если прям по дате захочется
+with help_row_numbers as (
+		select id, employee_id, r_date, r_time, r_type, row_number() over (partition by employee_id, r_date, r_type order by r_time) as r1
+		from times
+		order by employee_id, r_date, r_time, r_type)
+	select employee_id, max(r_time) as latest_come, r_date
+	from help_row_numbers
+	where r_type = 1 and r1 = 1
+	group by employee_id, r_date;
+
+
+-- на sql
+select min(EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM birth_date)) as min_age
+from employees
+where employee_id in (
+	with help_row_numbers as (
+			select id, employee_id, r_date, r_time, r_type, row_number() over (partition by employee_id, r_date, r_type order by r_time) as r1
+			from times
+			order by employee_id, r_date, r_time, r_type)
+		select employee_id
+		from help_row_numbers
+		where r_type = 1 and r1 = 1
+		group by employee_id
+		having max(r_time) - '09:00:00' > '00:10:00')
+
