@@ -1,56 +1,14 @@
 # Базы данных
 
-
-
-мета
-
-https://postgrespro.ru/docs/postgresql/9.6/information-schema
-
-Системные информационные функции
-
-https://postgrespro.ru/docs/postgrespro/10/functions-info
-
-https://github.com/kpirap18/db
-
-
-8 лаб
-Python
-
-(Winterpuma (оберган))(7 лаб, доп2, доп3) https://github.com/Winterpuma/bmstu_DB/tree/master
-
-(good Pandoral (старое))(9 лаб) https://github.com/Panda-Lewandowski/DataBase 
-
-(Sunshine-ki )(8 лаб) https://github.com/Sunshine-ki/BMSTU5_DB
-
-(PYTHON TinyMarcus)(5 лаб+extra) https://github.com/TinyMarcus/databases
-
-(6 лаб) https://github.com/nah990/bmstu_db
-
-(7 лаб) https://github.com/Epsilonbolee0/iu7_databases
-
-(LubaxaPro) (8 лаб) https://github.com/LyubaxaPro/database
-
-
-
-
-нууу (Богаченко (SpectralOne))(8 лаб) https://github.com/SpectralOne/bmstu-db/tree/master/src
-
-(Wilsem)(6 лаб + extra) https://github.com/bmstu-ics7/data-bases/tree/2022be9a2358b3a44aed5ca61c68e08c8952a26d
-
-
-(Кононенко (hackfeed))(8 лаб)  https://github.com/hackfeed/db-5th-sem-labs
-
-(Романов (mRrvz))(что-то про контейнер, 6 лаб) https://github.com/mRrvz/bmstu-db
-
-(NastyRu)(6 лаб +extra) https://github.com/NastyRu/Database
-
-
-
-(medva1997 (давнииий))(10 лаб) https://github.com/medva1997/bmstu_sem5/tree/master/DB
-
-(4 лабы) https://github.com/Kulikov17/DataBase_BMSTU
-
-
+1. Создание базы данных и наполнение ее тестовыми данными
+2. SQL запросы (изучение наиболее важных инструкций языка обработки данных DML)
+3. SQL модули (изучение трех видов программируемых возможностей: хранимых процедур, функций и триггеров)
+4. SQL CLR (изучение возможностей расширения функциональности модулей на базе SQL CLR на примере создания хранимых процедур, триггеров, пользовательских типов, функций и агрегатов на высокопроизводительных языках)
+5. Использование XML/JSON с базами данных (использование языка запросов для обработки данных в формате XML или JSON  на примере реляционных таблиц, содержащих столбец типа xml или json (jsonb))
+6. Технология доступа к данным РБД (подключение к базе данных и выполнению запросов из приложения)
+7. Использование технологии LINQ 
+8. Использование ETL инструментов на примере NiFi
+9. In-Memory DataBase на примере Redis
 
 
 
